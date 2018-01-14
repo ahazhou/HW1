@@ -5,13 +5,17 @@
 #################################
 
 ## List below here, in a comment/comments, the people you worked with on this assignment AND any resources you used to find code (50 point deduction for not doing so). If none, write "None".
+#RESOURCES:
+#https://github.com/ahazhou/HW1
 
 
 
 ## [PROBLEM 1] - 150 points
-## Below is code for one of the simplest possible Flask applications. Edit the code so that once you run this application locally and go to the URL 'http://localhost:5000/class', you see a page that says "Welcome to SI 364!"
+## Below is code for one of the simplest possible Flask applications. Edit the code so that once you run this application locally and 
+##go to the URL 'http://localhost:5000/class', you see a page that says "Welcome to SI 364!"
 
-from flask import Flask
+from flask import Flask, request
+import requests
 app = Flask(__name__)
 app.debug = True
 
@@ -19,13 +23,35 @@ app.debug = True
 def hello_to_you():
     return 'Hello!'
 
+#PROBLEM 1 SOLUTION:
+@app.route('/class')
+def class_route():
+    return "Welcome to SI 364!"
+
+#PROBLEM 2 SOLUTION:
+@app.route('/movie/<name>')
+def movie_route(name):
+    itunesMovieResponse = "https://itunes.apple.com/search?term=" + name + "&entity=movie"
+    response = requests.get(itunesMovieResponse)
+    movies = []
+    for var in response.json()["results"]:
+        movies.append(var)
+    if(response.json()["resultCount"] == 0):
+        return "<pre>{<br>\t\"resultCount\":0,<br>\t\"results\": []<br>}<pre>"
+    return '<p>{}<p>'.format(response.json())
+    
+
 
 if __name__ == '__main__':
     app.run()
 
 
 ## [PROBLEM 2] - 250 points
-## Edit the code chunk above again so that if you go to the URL 'http://localhost:5000/movie/<name-of-movie-here-one-word>' you see a big dictionary of data on the page. For example, if you go to the URL 'http://localhost:5000/movie/ratatouille', you should see something like the data shown in the included file sample_ratatouille_data.txt, which contains data about the animated movie Ratatouille. However, if you go to the url http://localhost:5000/movie/titanic, you should get different data, and if you go to the url 'http://localhost:5000/movie/dsagdsgskfsl' for example, you should see data on the page that looks like this:
+## Edit the code chunk above again so that if you go to the URL 'http://localhost:5000/movie/<name-of-movie-here-one-word>' 
+##you see a big dictionary of data on the page. For example, if you go to the URL 'http://localhost:5000/movie/ratatouille', 
+##you should see something like the data shown in the included file sample_ratatouille_data.txt, which contains data about 
+##the animated movie Ratatouille. However, if you go to the url http://localhost:5000/movie/titanic, you should get different 
+##data, and if you go to the url 'http://localhost:5000/movie/dsagdsgskfsl' for example, you should see data on the page that looks like this:
 
 # {
 #  "resultCount":0,
